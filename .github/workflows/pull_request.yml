@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Checkout code
-    - uses: actions/checkout@v2
+      uses: actions/checkout@v2
 
     - name: Set up JDK 1.8
       uses: actions/setup-java@v1
@@ -20,4 +20,13 @@ jobs:
 
     - name: Build with Maven
       run: mvn -f AlexaWhoSaidIt -B package
+
+    - name: Validate CloudFormation
+      uses: tkt-actions/aws-sam-cli@v1
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_DEFAULT_REGION: 'us-east-1'
+      with:
+        cmd: 'sam validate -t AlexaWhoSaidIt/template.yaml'
 
